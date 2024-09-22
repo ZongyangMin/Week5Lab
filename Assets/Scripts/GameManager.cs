@@ -11,11 +11,17 @@ public class GameManager : MonoBehaviour
     public bool gameOver = false;
 
     public int meteorCount = 0;
+    public int prevMeteorCount;
+
+    public AudioClip explosion;
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
     {
         InvokeRepeating("SpawnMeteor", 1f, 2f);
+        prevMeteorCount = meteorCount;
+        audioSource = this.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -36,6 +42,17 @@ public class GameManager : MonoBehaviour
             BigMeteor();
             CinemaShake.Instance.ShakeCamera(5f, .1f);
         }
+        if(meteorCount>prevMeteorCount)
+        {
+            audioSource.PlayOneShot(explosion,0.5f);
+            prevMeteorCount = meteorCount;
+        }
+        else if(meteorCount == 0 && prevMeteorCount>0)
+        {
+            prevMeteorCount = meteorCount;
+            audioSource.PlayOneShot(explosion,0.5f);
+        }
+
     }
 
     void SpawnMeteor()
